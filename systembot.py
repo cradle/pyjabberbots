@@ -43,8 +43,8 @@ class SystemBot(jabberbot.JabberBot):
         meminfo_file = open('/proc/meminfo')
         meminfo = {}
         for x in meminfo_file:
-            (key,value,junk) = x.split(None, 2)
             try:
+                (key,value,junk) = x.split(None, 2)
                 key = key[:-1] # strip off the trailing ':'
                 meminfo[key] = int(value)
             except:
@@ -56,13 +56,14 @@ class SystemBot(jabberbot.JabberBot):
                       meminfo['MemTotal'],
                       100 - (100*meminfo['MemFree']/meminfo['MemTotal']),
                       meminfo['MemFree'])
-        swapusage = 'Swap used: %d of %d kB (%d%%) - %d kB free' \
-                    % (meminfo['SwapTotal']-meminfo['SwapFree'],
-                       meminfo['SwapTotal'],
-                       100 - (100*meminfo['SwapFree']/meminfo['SwapTotal']),
-                       meminfo['SwapFree'])
         status.append(memusage)
-        status.append(swapusage)
+        if meminfo['SwapTotal']:
+            swapusage = 'Swap used: %d of %d kB (%d%%) - %d kB free' \
+                      % (meminfo['SwapTotal']-meminfo['SwapFree'],
+                         meminfo['SwapTotal'],
+                         100 - (100*meminfo['SwapFree']/meminfo['SwapTotal']),
+                         meminfo['SwapFree'])
+            status.append(swapusage)
 
         status = '\n'.join(status)
         # TODO: set "show" based on load? e.g. > 1 means "away"
@@ -74,6 +75,6 @@ class SystemBot(jabberbot.JabberBot):
 config = RawConfigParser()
 config.read(['/etc/systembot.cfg','systembot.cfg'])
 
-bot = SystemBot(config.get('DEFAULT','username'),
-                config.get('DEFAULT','password'))
+bot = SystemBot(config.get('systembot','username'),
+                config.get('systembot','password'))
 bot.serve_forever()

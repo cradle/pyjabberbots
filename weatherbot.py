@@ -403,13 +403,15 @@ if __name__ == "__main__":
     config = RawConfigParser()
     config.read(['/etc/weatherbot.cfg','weatherbot.cfg'])
 
-    jid = config.get('DEFAULT','jid')
-    server = config.get('DEFAULT','server')
-    port = config.getint('DEFAULT','port')
-    password = config.get('DEFAULT','password')
-    spooldir = config.get('DEFAULT','spooldir')
+    jid = config.get('weatherbot','jid')
+    server = config.get('weatherbot','server')
+    port = config.getint('weatherbot','port')
+    password = config.get('weatherbot','password')
+    spooldir = config.get('weatherbot','spooldir')
 
     for section in config.sections():
+        if section == 'weatherbot':
+            continue
         name, resource = section.split('/',1)
         if not bots.has_key(name):
             bots[name] = {}
