@@ -9,9 +9,20 @@
 import xmpp
 import os
 import jabberbot
+import subprocess
 from ConfigParser import RawConfigParser
 
 class SystemBot(jabberbot.JabberBot):
+    def bot_exec(self, mess, args):
+    	"""Executes the given command"""
+	if args.strip() == '':
+		return 'needs arguments'
+	else:
+		try:
+			return subprocess.Popen(args.split(), stdout=subprocess.PIPE).communicate()[0]
+		except Exception, e:
+			return e
+
     def bot_who(self, mess, args):
         """Display who's currently logged in."""
         who_pipe = os.popen('/usr/bin/who', 'r')
